@@ -69,21 +69,26 @@ xano-store-kotlin-main/
 ## Licencia
 Uso educativo/demostrativo.
 
-## Capturas
-<figure>
-  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/1.png" alt="Inicio y navegación" width="700" />
-  <figcaption>Inicio y navegación</figcaption>
-</figure>
+## Capturas (texto)
+Para mejorar accesibilidad y legibilidad en GitHub, se reemplazan las imágenes por descripciones textuales de cada vista y flujo:
 
-<figure>
-  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/2.png" alt="Catálogo y detalle de producto" width="700" />
-  <figcaption>Catálogo y detalle de producto</figcaption>
-</figure>
+- Inicio y navegación
+  - Encabezado con branding de "Don Pepe" y acceso a secciones principales.
+  - Accesos rápidos a `Catálogo`, `Carrito` y `Perfil`.
+  - Controles de sesión visibles: entrar/registrarse o ver estado del usuario.
+  - Navegación clara entre pantallas (barra inferior o botones de acción, según dispositivo).
 
-<figure>
-  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/3.png" alt="Carrito y proceso de checkout" width="700" />
-  <figcaption>Carrito y proceso de checkout</figcaption>
-</figure>
+- Catálogo y detalle de producto
+  - Listado de productos con imagen, nombre, precio y stock, usando `RecyclerView`.
+  - Posibilidad de búsqueda/filtrado (si se habilita en la configuración).
+  - Pantalla de detalle con descripción, galería de imágenes y botón `Añadir al carrito`.
+  - Indicadores de estado: cargando, vacío y error ante fallos de la API.
+
+- Carrito y proceso de checkout
+  - Carrito con productos seleccionados, cantidades editables y subtotal por ítem.
+  - Cálculo de total y validación antes de pagar.
+  - Botón `Pagar` que crea la orden (pago simulado) y muestra estados: `pendiente`, `aceptado`, `rechazado`, `enviado`.
+  - Confirmaciones y mensajes de éxito/error para acciones críticas.
 
 ## Configuración de BuildConfig (opcional)
 Si necesitas centralizar URLs/constantes, puedes definir campos en `app/build.gradle.kts`:
