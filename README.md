@@ -72,15 +72,15 @@ Uso educativo/demostrativo.
 ## Capturas
 - Inicio y navegación
   
-  ![Inicio](docs/images/1.png)
+  ![Inicio](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/1.png)
 
 - Catálogo y detalle
   
-  ![Catálogo](docs/images/2.png)
+  ![Catálogo](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/2.png)
 
 - Carrito y checkout
   
-  ![Carrito](docs/images/3.png)
+  ![Carrito](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/3.png)
 
 ## Configuración de BuildConfig (opcional)
 Si necesitas centralizar URLs/constantes, puedes definir campos en `app/build.gradle.kts`:
@@ -94,3 +94,28 @@ defaultConfig {
 ```
 
 Luego léelos en tu `ApiConfig` o servicios vía `BuildConfig.XANO_STORE_BASE`, etc.
+
+## Endpoints y ejemplos
+- Referencia detallada: `docs/ENDPOINTS.md`.
+- Autenticación (ejemplo cURL):
+
+```bash
+curl -X POST \
+  "$XANO_AUTH_BASE/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"usuario@example.com","password":"tu_password"}'
+```
+
+- Productos (listado):
+
+```bash
+curl -X GET \
+  "$XANO_STORE_BASE/product" \
+  -H "Authorization: Bearer TU_TOKEN"
+```
+
+## Preguntas frecuentes (FAQ)
+- No se ven imágenes en GitHub: usa URLs absolutas (ya aplicado) o verifica rutas/branch.
+- Error de conexión a Xano: confirma `android.permission.INTERNET` y URLs en `BuildConfig`.
+- Fallo de build en Windows (CRLF): habilita autocrlf o re-formatea line endings.
+- Icono no actualiza: limpia caché de Android Studio (`Invalidate Caches / Restart`).
