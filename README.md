@@ -70,17 +70,20 @@ xano-store-kotlin-main/
 Uso educativo/demostrativo.
 
 ## Capturas
-- Inicio y navegación
-  
-  ![Inicio](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/1.png)
+<figure>
+  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/1.png" alt="Inicio y navegación" width="700" />
+  <figcaption>Inicio y navegación</figcaption>
+</figure>
 
-- Catálogo y detalle
-  
-  ![Catálogo](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/2.png)
+<figure>
+  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/2.png" alt="Catálogo y detalle de producto" width="700" />
+  <figcaption>Catálogo y detalle de producto</figcaption>
+</figure>
 
-- Carrito y checkout
-  
-  ![Carrito](https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/3.png)
+<figure>
+  <img src="https://raw.githubusercontent.com/snozzono/EV3-MOVIL-AAAAAAAAAAAAAAAAAAAAAAAAAAAA/main/docs/images/3.png" alt="Carrito y proceso de checkout" width="700" />
+  <figcaption>Carrito y proceso de checkout</figcaption>
+</figure>
 
 ## Configuración de BuildConfig (opcional)
 Si necesitas centralizar URLs/constantes, puedes definir campos en `app/build.gradle.kts`:
@@ -119,3 +122,19 @@ curl -X GET \
 - Error de conexión a Xano: confirma `android.permission.INTERNET` y URLs en `BuildConfig`.
 - Fallo de build en Windows (CRLF): habilita autocrlf o re-formatea line endings.
 - Icono no actualiza: limpia caché de Android Studio (`Invalidate Caches / Restart`).
+
+## Proyecto Final (resumen)
+Este repositorio cumple con el proyecto final propuesto: app e-commerce con roles (Cliente/Admin), sesión con `SharedPreferences`, CRUD de productos con múltiples imágenes, gestión de usuarios, pagos/órdenes (simulados) y flujo de demo completo.
+
+- Objetivo: e-commerce básico con dos roles y flujo de pago simulado.
+- Requisitos funcionales: autenticación, catálogo/carrito, CRUD productos, usuarios (bloqueo/desbloqueo), pagos/órdenes (pendiente → aceptar/rechazar → enviado).
+- Técnicos: Kotlin + XML, ViewBinding, Retrofit, RecyclerView, subida de múltiples imágenes, ícono personalizado, APK funcional, validaciones y estados.
+- Backend recomendado: Xano (alternativas: Supabase/Firebase/REST propio). Documentar inicialización y credenciales de prueba.
+- UX/UI mínimos: responsivo, estados (cargando/vacío/error), confirmaciones y feedback claro, controles por rol.
+- Flujo demo: Admin (productos/usuarios/pagos) y Cliente (catálogo/carrito/pago simulado/envío/perfil).
+- Entregables: repo con README, APK y video demo (5–7 min).
+- Evaluación: 100 pts (auth/sesión, cliente, admin productos/usuarios, pagos/órdenes, integración técnica, calidad UI/UX, entrega).
+
+Documento completo (PDF):
+
+- [Proyecto Final — App Android (Kotlin + Layout XML)](docs/ProyectoFinal-AppAndroid-Kotlin-LayoutXML.pdf)
