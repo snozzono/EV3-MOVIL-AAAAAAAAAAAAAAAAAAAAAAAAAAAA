@@ -68,3 +68,29 @@ xano-store-kotlin-main/
 
 ## Licencia
 Uso educativo/demostrativo.
+
+## Capturas
+- Inicio y navegación
+  
+  ![Inicio](docs/images/1.png)
+
+- Catálogo y detalle
+  
+  ![Catálogo](docs/images/2.png)
+
+- Carrito y checkout
+  
+  ![Carrito](docs/images/3.png)
+
+## Configuración de BuildConfig (opcional)
+Si necesitas centralizar URLs/constantes, puedes definir campos en `app/build.gradle.kts`:
+
+```kts
+defaultConfig {
+    buildConfigField("String", "XANO_STORE_BASE", "\"https://<tu-xano>/api:<id_store>\"")
+    buildConfigField("String", "XANO_AUTH_BASE",  "\"https://<tu-xano>/api:<id_auth>\"")
+    buildConfigField("int", "XANO_TOKEN_TTL_SEC", "86400")
+}
+```
+
+Luego léelos en tu `ApiConfig` o servicios vía `BuildConfig.XANO_STORE_BASE`, etc.
