@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Carrito morado -->
+    <!-- Cesta del carrito -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M5,9h12v7H7c-1.1,0 -2,-0.9 -2,-2z"/>
+    <!-- Manillar del carrito -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M5,9 L3.5,6.5 L4.5,6 L6.5,8.5 Z"/>
+    <!-- Rueda izquierda -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M7,18 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+    <!-- Rueda derecha -->
+    <path
+        android:fillColor="#7E57C2"
+        android:pathData="M15,18 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+</vector>

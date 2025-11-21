@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Previsualización de cambios UI</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    h1 { font-size: 20px; }
+    ul { line-height: 1.6; }
+    .icon { display: inline-block; width: 24px; height: 24px; background: #eee; border: 1px solid #ccc; margin-right: 8px; }
+    .card { border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Previsualización estática de cambios UI</h1>
+  <p>Esta página resume visualmente los cambios aplicados a la app Android:</p>
+  <ul>
+    <li>Cambiado el icono del login a <strong>casa</strong> (ic_menu_home).</li>
+    <li>Cambiado iconos de "Productos" en menús inferiores (cliente y admin) a <strong>casa</strong>.</li>
+    <li>Cambiado icono del botón de menú en Home a <strong>casa</strong>.</li>
+    <li>El botón <em>Checkout</em> se deshabilita si el carrito está vacío.</li>
+    <li>Los listados de productos se <em>refrescan al volver</em> a la pantalla.</li>
+  </ul>
+
+  <div class="card">
+    <h2>Mock de icono "Casa"</h2>
+    <div class="icon" title="ic_menu_home"></div>
+    <span>Representación simbólica del icono aplicado.</span>
+  </div>
+
+  <p>Nota: La UI real se renderiza en Android; esta previsualización es ilustrativa.</p>
+</body>
+</html>

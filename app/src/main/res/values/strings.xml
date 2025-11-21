@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Don Pepe</string>
+    <string name="product_image">Product Image</string>
+    <string name="vista_previa_de_imagen_seleccionada">Vista previa de imagen seleccionada</string>
+
+    <!-- Navegación inferior -->
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_products">Productos</string>
+    <string name="nav_cart">Carrito</string>
+    <string name="nav_add">Agregar</string>
+    <string name="nav_users">Usuarios</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="edit">Editar</string>
+    <string name="activate_deactivate">Activar/Desactivar</string>
+    <string name="delete">Eliminar</string>
+    <string name="confirm_delete_title">¿Eliminar producto?</string>
+    <string name="confirm_delete_msg">Esta acción no se puede deshacer.</string>
+    <string name="confirm_delete_final_title">Confirmación final</string>
+    <string name="confirm_delete_final_msg">Confirma que quieres eliminar definitivamente.</string>
+    <string name="cancel">Cancelar</string>
+    <string name="accept">Aceptar</string>
+
+    <!-- Bienvenida -->
+    <string name="welcome_name">Bienvenido, %1$s!</string>
+
+    <!-- Item de producto -->
+    <string name="product_image_desc">Imagen del producto</string>
+    <string name="label_name">Nombre</string>
+    <string name="label_description">Descripción</string>
+    <string name="label_price">Precio</string>
+    <string name="add_to_cart_desc">Agregar al carrito</string>
+    <string name="price_prefix">Precio: %1$s</string>
+
+    <!-- Carrito -->
+    <string name="cart_title">Carrito</string>
+    <string name="cart_empty">Tu carrito está vacío</string>
+    <string name="cart_item_product_id">Producto ID: %1$d</string>
+    <string name="cart_item_quantity">Cantidad: %1$d</string>
+    <string name="checkout">Pagar</string>
+    <string name="menu">Menú</string>
+</resources>
