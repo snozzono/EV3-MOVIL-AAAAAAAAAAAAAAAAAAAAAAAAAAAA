@@ -64,6 +64,27 @@ xano-store-kotlin-main/
 └── XANO Tienda.postman_collection.json
 ```
 
+## Carpetas y Propósito
+
+- `app/`: módulo principal de la app Android.
+  - `build.gradle.kts`: dependencias del módulo (Retrofit, Coil, etc.).
+  - `release/`: artefactos o configuraciones de publicación.
+  - `src/main/`: código y recursos de producción.
+    - `AndroidManifest.xml`: declaración de actividades, permisos y configuración.
+    - `java/com/miapp/xanostorekotlin/`: código Kotlin por paquetes.
+      - `api/`: clientes y gestores de red y sesión (`RetrofitClient`, `TokenManager`, `CartManager`, `*Service` y requests).
+      - `model/`: modelos de datos (`Product`, `User`, `Cart`, `Order`, `ProductImage`, etc.).
+      - `ui/`: Activities, Fragments y Adapters (capa de presentación).
+      - `util/`: utilidades generales (ej.: `ImageUrlResolver`).
+    - `res/`: recursos Android (layouts, drawables, strings, temas, menús, navegación, etc.).
+- `docs/`: documentación del proyecto (guías, endpoints, presentación, cuentas demo, imágenes).
+- `preview/`: vista previa HTML para mostrar contenido relacionado con la app.
+- `gradle/`, `gradlew`, `gradlew.bat`: wrapper y configuración de Gradle.
+- `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`: configuración global del proyecto.
+- `.idea/`: metadatos del IDE.
+- `README.md`: descripción general del proyecto.
+- `XANO Tienda.postman_collection.json`: colección Postman con endpoints de Xano.
+
 ## Estructura de Datos (Modelos)
 
 - `Product`
@@ -145,29 +166,27 @@ xano-store-kotlin-main/
 - Cerrar con notas técnicas: Retrofit, ViewBinding, RecyclerView, `SharedPreferences` y `ImageUrlResolver`.
 - Señalar mejoras que dejarías para producción (MVVM/Hilt/Room, etc.).
 
-## Preguntas de Doble Check
 
-- ¿El `storeBaseUrl` y credenciales de Xano están configurados en `BuildConfig` o `ApiConfig` correctamente para el entorno del profe?
-- ¿`TokenManager` limpia sesión en logout y redirige por rol sin estados inconsistentes?
-- ¿`CartManager` garantiza `cart_id` (crea si falta) y resiste reinstalaciones?
-- ¿`ImageUrlResolver` cubre cases sin `url` y con `path` relativo en todas las vistas?
-- ¿Validaciones de formularios (precios, stock, email) impiden datos inválidos?
-- ¿Se manejan estados `cargando/vacío/error` con feedback claro y reintento donde aplica?
-- ¿Los endpoints de Xano para CRUD producto/usuario y órdenes están alineados con los modelos actuales?
-- ¿Hay límites de tamaño/formatos de imagen definidos y comunicados?
-- ¿Se necesitan seeds de datos (≥10 productos) para una demo fluida?
+## Doble Check — Preguntas y Respuestas
 
-## Respuestas del Doble Check (estado actual)
-
-- Configuración de base URLs y credenciales: configuradas en `app/build.gradle.kts` vía `buildConfigField` y consumidas en `ApiConfig`. Verifica que los grupos `XANO_STORE_BASE` y `XANO_AUTH_BASE` apunten al entorno correcto del profe.
-- TokenManager y logout: `clear()` limpia token y preferencias; logout redirige a login en `ProfileFragment`, `HomeActivity` y `HomeClientActivity`. Navegación por rol funcionando.
-- CartManager: asegura `cart_id` llamando al API si falta y lo persiste en `SharedPreferences`. Tras reinstalación se crea uno nuevo; continuidad depende de la política del backend.
-- ImageUrlResolver: cubre `url` directo y `path` relativo construyendo `scheme://host + path` desde `storeBaseUrl`. Usado en adapters, detalle y carrito.
-- Validaciones de formularios: básicas (no vacío y parseo de `price`). Falta validar formato de email y rangos (`price >= 0`, `stock >= 0`) con errores por campo.
-- Estados de UI: hay `progress` y `Toast/Snackbar` en pantallas clave, pero no hay patrón unificado de estados ni acciones de reintento.
-- Alineación de endpoints: servicios `product/user/cart/order/shipping` coinciden con modelos y rutas. Requiere confirmar esquemas exactos en backend.
-- Límites de imagen: la app no valida tamaño/formatos al seleccionar; usar Coil muestra errores. Requiere confirmar restricciones en backend.
-- Seeds de datos: recomendados para demo fluida (≥10 productos y varios usuarios); no forzados en código.
+- ¿El `storeBaseUrl` y credenciales de Xano están bien configurados?
+  - Respuesta: Sí, se definen en `app/build.gradle.kts` con `buildConfigField` y se consumen en `ApiConfig`. Verifica que `XANO_STORE_BASE` y `XANO_AUTH_BASE` apunten al entorno del profe.
+- ¿`TokenManager` limpia sesión y redirige por rol correctamente?
+  - Respuesta: Sí. `clear()` borra token y preferencias; logout desde `ProfileFragment`, `HomeActivity` y `HomeClientActivity` redirige a login con navegación por rol.
+- ¿`CartManager` asegura o recuerda `cart_id`?
+  - Respuesta: Sí. Si falta, crea uno vía API y lo guarda en `SharedPreferences`. Tras reinstalación, se crea un nuevo `cart_id`; la continuidad depende del backend.
+- ¿`ImageUrlResolver` cubre casos `url` y `path` relativo?
+  - Respuesta: Sí. Usa `image.url` cuando existe y construye `scheme://host + path` desde `storeBaseUrl` cuando solo hay `path`. Se usa en adapters, detalle y carrito.
+- ¿Validaciones de formularios son suficientes?
+  - Respuesta: Son básicas (no vacío y parseo de `price`). Falta validar formato de email y rangos (`price >= 0`, `stock >= 0`) con errores en cada campo.
+- ¿Estados `cargando/vacío/error` tienen feedback y reintento?
+  - Respuesta: Hay `progress` y `Toast/Snackbar` en pantallas clave; falta un patrón unificado de estados y botones de reintento visibles.
+- ¿Endpoints de Xano alinean con modelos?
+  - Respuesta: Sí, las rutas `product/user/cart/order/shipping` coinciden con los modelos. Conviene confirmar esquemas exactos con backend.
+- ¿Límites de tamaño/formatos de imagen están definidos?
+  - Respuesta: No están validados en la app; Coil muestra errores de carga. Debe confirmarse tamaño máximo y MIME aceptado en backend.
+- ¿Seeds de datos son suficientes para la demo?
+  - Respuesta: Recomendado ≥10 productos y varios usuarios para fluidez; no se fuerzan desde código.
 
 ## Definiciones Clave (StateFlow, Room, Paging 3, BuildConfig)
 
