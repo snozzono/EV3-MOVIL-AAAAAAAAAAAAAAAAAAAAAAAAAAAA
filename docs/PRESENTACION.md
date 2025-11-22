@@ -4,6 +4,45 @@
 
 Este documento te sirve para presentar el proyecto, estudiar su arquitectura y entender los datos y flujos clave. Incluye árbol de carpetas, estructura de datos, capas, ventajas y mejoras propuestas, además de un guion de demo y preguntas de doble verificación.
 
+### Resumen Ejecutivo
+
+- App Android de tienda (Admin/Cliente) con autenticación token y navegación por rol.
+- Arquitectura simple: UI (Activities/Fragments/Adapters), red (Retrofit/OkHttp), sesión (`TokenManager`), utilidades (`ImageUrlResolver`).
+- Modelos de datos claros: `Product`, `User`, `Cart`, `Order` y sus relaciones.
+- Recursos Android organizados en `res/` con `layout/`, `values/`, `drawable/`, menús y navegación.
+- Código clave explicado: interceptor `Authorization`, gestión de `cart_id`, subida múltiple de imágenes.
+- Lista de mejoras preparada: validaciones, estados `UiState`, seeds y confirmaciones con backend.
+
+### Objetivos
+
+- Presentar el proyecto con claridad técnica y justificar decisiones de diseño.
+- Demostrar flujo completo de uso para admin/cliente y operaciones principales.
+- Preparar a quien presenta para defender el código como si lo hubiera escrito.
+
+### Alcance
+
+- Cobertura: arquitectura, modelos, servicios, UI, recursos y manejo de errores.
+- Excluye: almacenamiento seguro avanzado, patrones complejos (Room/Paging en producción), pruebas automatizadas.
+
+### Tabla de contenido
+
+- [Introducción](#introducción)
+  - [Resumen Ejecutivo](#resumen-ejecutivo)
+  - [Objetivos](#objetivos)
+  - [Alcance](#alcance)
+  - [Árbol de Carpetas](#árbol-de-carpetas---tree)
+  - [Carpetas y Propósito](#carpetas-y-propósito)
+  - [Recursos Android](#recursos-android-carpeta-res)
+- [Desarrollo](#desarrollo)
+  - [Estructura de Datos (Modelos)](#estructura-de-datos-modelos)
+  - [Capas y Contextos](#capas-y-contextos)
+  - [Código Clave Explicado](#código-clave-explicado-línea-por-línea-y-decisiones)
+  - [Doble Check — Preguntas y Respuestas](#doble-check--preguntas-y-respuestas)
+  - [Definiciones Clave](#definiciones-clave-stateflow-room-paging-3-buildconfig)
+  - [Puntos a confirmar en backend](#puntos-a-confirmar-en-backend)
+- [Cierre](#cierre)
+  - [Exportar a .docx / .pdf](#exportar-a-docx--pdf)
+
 ### Árbol de Carpetas (--tree)
 
 Proyecto principal (extracto):
