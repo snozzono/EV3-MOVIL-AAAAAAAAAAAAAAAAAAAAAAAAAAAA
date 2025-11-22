@@ -157,6 +157,32 @@ xano-store-kotlin-main/
 - ¿Hay límites de tamaño/formatos de imagen definidos y comunicados?
 - ¿Se necesitan seeds de datos (≥10 productos) para una demo fluida?
 
+## Respuestas del Doble Check (estado actual)
+
+- Configuración de base URLs y credenciales: configuradas en `app/build.gradle.kts` vía `buildConfigField` y consumidas en `ApiConfig`. Verifica que los grupos `XANO_STORE_BASE` y `XANO_AUTH_BASE` apunten al entorno correcto del profe.
+- TokenManager y logout: `clear()` limpia token y preferencias; logout redirige a login en `ProfileFragment`, `HomeActivity` y `HomeClientActivity`. Navegación por rol funcionando.
+- CartManager: asegura `cart_id` llamando al API si falta y lo persiste en `SharedPreferences`. Tras reinstalación se crea uno nuevo; continuidad depende de la política del backend.
+- ImageUrlResolver: cubre `url` directo y `path` relativo construyendo `scheme://host + path` desde `storeBaseUrl`. Usado en adapters, detalle y carrito.
+- Validaciones de formularios: básicas (no vacío y parseo de `price`). Falta validar formato de email y rangos (`price >= 0`, `stock >= 0`) con errores por campo.
+- Estados de UI: hay `progress` y `Toast/Snackbar` en pantallas clave, pero no hay patrón unificado de estados ni acciones de reintento.
+- Alineación de endpoints: servicios `product/user/cart/order/shipping` coinciden con modelos y rutas. Requiere confirmar esquemas exactos en backend.
+- Límites de imagen: la app no valida tamaño/formatos al seleccionar; usar Coil muestra errores. Requiere confirmar restricciones en backend.
+- Seeds de datos: recomendados para demo fluida (≥10 productos y varios usuarios); no forzados en código.
+
+## Definiciones Clave (StateFlow, Room, Paging 3, BuildConfig)
+
+- StateFlow: flujo “caliente” de Kotlin para exponer estado en `ViewModel` con un valor actual; la vista colecta respetando el ciclo de vida.
+- Room: capa de persistencia sobre SQLite con `@Entity`, `@Dao`, `@Database` y validación en compile-time; soporta `Flow` y se integra con Paging.
+- Paging 3: librería Jetpack para paginación eficiente; produce `Flow<PagingData<T>>` desde `Pager` y se integra con Retrofit y Room.
+- BuildConfig: clase generada por Gradle por variante (debug/release) con constantes definidas por `buildConfigField`; se usa para URLs base y flags.
+
+## Puntos a confirmar en backend
+
+- Grupos y rutas de API: que `XANO_STORE_BASE` y `XANO_AUTH_BASE` correspondan a los grupos correctos y que las rutas (`product`, `user`, `cart_item`, `order_item`, `shipping`) existan tal cual.
+- Esquemas: tipos/opcionales de `CreateProductResponse`, `OrderItem`, `Shipping` y requests de CRUD.
+- Carritos por usuario: política de deduplicación por `user_id` o múltiples carritos.
+- Restricciones de imagen: tamaño máximo y tipos MIME aceptados para validar antes de subir.
+
 ## Exportar a .docx / .pdf
 
 - Puedes abrir este `.md` en VSCode y exportar a `.docx` con extensiones tipo `Markdown PDF` o usar `pandoc`.

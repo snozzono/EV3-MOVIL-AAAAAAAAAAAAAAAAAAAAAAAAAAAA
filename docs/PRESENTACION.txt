@@ -72,5 +72,25 @@ Preguntas de doble check:
 - ¿Límites de tamaño/formatos de imagen definidos?
 - ¿Seeds suficientes (≥10 productos) para demo?
 
+Actualización — Definiciones clave:
+- StateFlow: flujo “caliente” con valor actual para estado de UI.
+- Room: BD local con entidades/DAOs; soporta Flow y se integra con Paging.
+- Paging 3: paginación con `Pager` → `Flow<PagingData<T>>` y `PagingDataAdapter`.
+- BuildConfig: constantes por variante definidas con `buildConfigField` y consumidas en código.
+
+Respuestas del doble-check (estado actual):
+- URLs/credenciales: configuradas en BuildConfig y usadas via ApiConfig; verificar grupos.
+- Logout/sesión: `TokenManager.clear()` y navegación por rol correctas.
+- CartManager: asegura `cart_id`; reinstalaciones crean nuevo (depende del backend).
+- Imágenes: `ImageUrlResolver` cubre `url` y `path` relativo en vistas clave.
+- Validación: básica; faltan formato de email y rangos (`price >= 0`, `stock >= 0`).
+- Estados: hay `progress` y toasts; falta patrón unificado y reintento visible.
+- Endpoints: alineados con modelos y rutas; confirmar esquemas exactos con backend.
+- Imágenes: sin validación de tamaño/formatos; confirmar restricciones en servidor.
+- Seeds: recomendable ≥10 productos y varios usuarios para demo fluida.
+
+Backend a confirmar:
+- Grupos/rutas correctos, esquemas de modelos/requests, política de carrito por usuario, límites de imagen.
+
 Exportar a .docx/.pdf:
 - Exportar desde Markdown (VSCode + extensión, o pandoc) o copiar a Google Docs.
