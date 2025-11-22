@@ -1,8 +1,10 @@
 # Don Pepe — Guía de Presentación Técnica
 
+## Introducción
+
 Este documento te sirve para presentar el proyecto, estudiar su arquitectura y entender los datos y flujos clave. Incluye árbol de carpetas, estructura de datos, capas, ventajas y mejoras propuestas, además de un guion de demo y preguntas de doble verificación.
 
-## Árbol de Carpetas (--tree)
+### Árbol de Carpetas (--tree)
 
 Proyecto principal (extracto):
 
@@ -70,7 +72,7 @@ xano-store-kotlin-main/
 └── XANO Tienda.postman_collection.json
 ```
 
-## Carpetas y Propósito
+### Carpetas y Propósito
 
 - `app/`: módulo principal de la app Android.
   - `build.gradle.kts`: dependencias del módulo (Retrofit, Coil, etc.).
@@ -91,7 +93,7 @@ xano-store-kotlin-main/
 - `README.md`: descripción general del proyecto.
 - `XANO Tienda.postman_collection.json`: colección Postman con endpoints de Xano.
 
-## Recursos Android (carpeta `res`)
+### Recursos Android (carpeta `res`)
 
 - Estructura habitual:
   - `layout/`: vistas XML. Convención: `activity_*`, `fragment_*`, `item_*`. Ej.: `fragment_profile.xml` genera `FragmentProfileBinding`.
@@ -121,7 +123,9 @@ xano-store-kotlin-main/
   - Usar vectores cuando sea posible; colocar íconos de app en `mipmap/`.
   - Separar `item_*` (RecyclerView) de `fragment_*`/`activity_*`.
 
-## Estructura de Datos (Modelos)
+## Desarrollo
+
+### Estructura de Datos (Modelos)
 
 - `Product`
   - Campos: `id:Int`, `name:String`, `description:String?`, `price:Int?`, `stock:Int`, `brand:String`, `category:String`, `images:List<ProductImage>?`, `enabled:Boolean?`.
@@ -153,7 +157,7 @@ xano-store-kotlin-main/
   - `CartService` lleva `CreateCartRequest`, `UpdateCartRequest`, `AddCartItemRequest`, `UpdateCartItemRequest`
   - `OrderService` lleva `CreateOrderRequest`, `UpdateOrderRequest`, `CreateOrderItemRequest`, `UpdateOrderItemRequest`, `CreateShippingRequest`, `UpdateShippingRequest`
 
-## Capas y Contextos
+### Capas y Contextos
 
 - UI (Activities/Fragments/Adapters)
   - `HomeActivity` (Admin) y `HomeClientActivity` (Cliente): navegación por rol.
@@ -171,7 +175,7 @@ xano-store-kotlin-main/
 - Utilidades
   - `ImageUrlResolver`: resuelve URL absoluta de imagen usando `image.url` o `storeBaseUrl` + `path`.
 
-## Código Clave Explicado (línea por línea y decisiones)
+### Código Clave Explicado (línea por línea y decisiones)
 
 ### TokenManager — gestión de sesión con SharedPreferences
 - Propósito: centraliza el almacenamiento del token y datos mínimos del usuario (nombre, email) usando `SharedPreferences`. Es una aproximación didáctica y simple para persistencia.
@@ -309,7 +313,7 @@ xano-store-kotlin-main/
 - Señalar mejoras que dejarías para producción (MVVM/Hilt/Room, etc.).
 
 
-## Doble Check — Preguntas y Respuestas
+### Doble Check — Preguntas y Respuestas
 
 - ¿El `storeBaseUrl` y credenciales de Xano están bien configurados?
   - Respuesta: Sí, se definen en `app/build.gradle.kts` con `buildConfigField` y se consumen en `ApiConfig`. Verifica que `XANO_STORE_BASE` y `XANO_AUTH_BASE` apunten al entorno del profe.
@@ -330,14 +334,14 @@ xano-store-kotlin-main/
 - ¿Seeds de datos son suficientes para la demo?
   - Respuesta: Recomendado ≥10 productos y varios usuarios para fluidez; no se fuerzan desde código.
 
-## Definiciones Clave (StateFlow, Room, Paging 3, BuildConfig)
+### Definiciones Clave (StateFlow, Room, Paging 3, BuildConfig)
 
 - StateFlow: flujo “caliente” de Kotlin para exponer estado en `ViewModel` con un valor actual; la vista colecta respetando el ciclo de vida.
 - Room: capa de persistencia sobre SQLite con `@Entity`, `@Dao`, `@Database` y validación en compile-time; soporta `Flow` y se integra con Paging.
 - Paging 3: librería Jetpack para paginación eficiente; produce `Flow<PagingData<T>>` desde `Pager` y se integra con Retrofit y Room.
 - BuildConfig: clase generada por Gradle por variante (debug/release) con constantes definidas por `buildConfigField`; se usa para URLs base y flags.
 
-## Puntos a confirmar en backend
+### Puntos a confirmar en backend
 
 - Grupos y rutas de API: que `XANO_STORE_BASE` y `XANO_AUTH_BASE` correspondan a los grupos correctos y que las rutas (`product`, `user`, `cart_item`, `order_item`, `shipping`) existan tal cual.
 - Esquemas: tipos/opcionales de `CreateProductResponse`, `OrderItem`, `Shipping` y requests de CRUD.
@@ -345,11 +349,11 @@ xano-store-kotlin-main/
 - Restricciones de imagen: tamaño máximo y tipos MIME aceptados para validar antes de subir.
 
 
-## Exportar a .docx / .pdf
-
-- Puedes abrir este `.md` en VSCode y exportar a `.docx` con extensiones tipo `Markdown PDF` o usar `pandoc`.
-- Alternativa rápida: copiar a Google Docs y descargar `.docx`/`.pdf`.
-
 ## Cierre
 
 Este proyecto cumple el “Proyecto Final” y está listo para demo. Con las mejoras propuestas, tienes una ruta clara para llevarlo a nivel producción.
+
+### Exportar a .docx / .pdf
+
+- Puedes abrir este `md` en VSCode y exportar a `docx` con extensiones tipo `Markdown PDF` o usar `pandoc`.
+- Alternativa rápida: copiar a Google Docs y descargar `docx`/`pdf`.
