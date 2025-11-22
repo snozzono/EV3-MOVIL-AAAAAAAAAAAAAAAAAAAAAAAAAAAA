@@ -135,6 +135,112 @@ xano-store-kotlin-main/
 - Utilidades
   - `ImageUrlResolver`: resuelve URL absoluta de imagen usando `image.url` o `storeBaseUrl` + `path`.
 
+## Código Clave Explicado (línea por línea y decisiones)
+
+### TokenManager — gestión de sesión con SharedPreferences
+- Propósito: centraliza el almacenamiento del token y datos mínimos del usuario (nombre, email) usando `SharedPreferences`. Es una aproximación didáctica y simple para persistencia.
+- Uso típico: `TokenManager.saveAuth(token, name, email)` tras login; `TokenManager.getToken()` para el interceptor; `TokenManager.clear()` en logout.
+- Decisiones:
+  - Se usa `SharedPreferences` por facilidad; en producción conviene `EncryptedSharedPreferences` o `DataStore` para mayor seguridad y robustez.
+  - Métodos de lectura retornan tipos simples (`String?`/`Boolean`), evitando depender de un modelo complejo.
+- Implicaciones:
+  - La sesión está ligada al dispositivo. Al limpiar o reinstalar, se pierde el estado; la app maneja esto reautenticando.
+  - El interceptor no inyecta si `getToken()` devuelve `null`.
+
+### RetrofitClient — configuración de red e interceptor de autorización
+- Propósito: expone fábricas `createProductService`, `createUserService`, etc., todas basadas en un `OkHttpClient` común.
+- Decisiones:
+  - `GsonConverterFactory`: simplifica la (de)serialización de JSON sin boilerplate.
+  - Interceptor `Authorization`: lee `TokenManager.getToken()` y añade la cabecera `Bearer <token>` cuando existe. Esto evita repetir lógica en cada llamada.
+  - Base URLs: se leen de `BuildConfig` (por variante) y se centralizan en `ApiConfig`.
+- Detalle del flujo:
+  - Cada petición pasa por el interceptor; si hay token, se añade `Authorization`. Si no, la petición se hace anónima.
+  - Retrofit mapea interfaces `suspend fun` a llamadas de red en hilos de IO.
+
+### CartManager — garantizar `cart_id` por usuario (suspending y persistencia)
+- Contexto: el carrito necesita un `cart_id` asociado al usuario. Si no existe en `SharedPreferences`, se crea uno llamando a Xano.
+- Método clave: `ensureCartId(userId: Int): Int`.
+  - Lee `cart_id` de `SharedPreferences`. Si existe, retorna inmediatamente.
+  - Si no existe: ejecuta en `Dispatchers.IO` una llamada a `CartService.createCart(CreateCartRequest(userId))`.
+  - Al recibir el `id` del carrito, lo guarda en `SharedPreferences` y lo devuelve.
+- Decisiones y riesgos:
+  - `Dispatchers.IO`: evita bloquear el hilo principal; correcto para I/O de red y disco.
+  - Idempotencia: llamar varias veces sin `cart_id` puede crear múltiples carritos; se mitiga persistiendo inmediatamente el `id`. Mejora posible: hacer "singleflight" con un candado para evitar paralelismo creando duplicados.
+  - Reinstalaciones: al perder `SharedPreferences`, se creará un nuevo `cart_id`. La continuidad queda a criterio del backend.
+
+### ImageUrlResolver — construir URL absoluta robusta
+- Contexto: algunos `ProductImage` vienen con `url` absoluta; otros solo traen `path` relativo.
+- Lógica:
+  - Si `image.url` no es nula/blank, se devuelve tal cual (evita romper si el backend ya dio el absoluto).
+  - Si no, se toma `ApiConfig.storeBaseUrl` y se extraen `scheme` y `host`; se construye `scheme://host + image.path` (sin duplicar `/`).
+  - `firstImageUrl(images)`: recorre la lista y retorna el primer URL resolviendo con la misma estrategia.
+- Decisiones:
+  - Se prioriza `url` para no rehacer lo que el backend entrega.
+  - El uso de `scheme`/`host` evita problemas si `storeBaseUrl` tiene rutas (p.ej., `/api`) que no deben incluirse antes del `path` de la imagen.
+  - Fallbacks: si la lista está vacía o el `path` está en blanco, devuelve `null` y la UI usa placeholders.
+
+### AddProductFragment — subida paralela de imágenes y creación/edición de productos
+- Flujo al crear producto:
+  - Selección de imágenes: el fragment guarda URIs locales seleccionadas.
+  - Subida paralela: usa `lifecycleScope.launch` + `async(Dispatchers.IO)` por cada imagen para subir en paralelo; luego `awaitAll()` espera todas.
+  - Mapeo de respuesta: las subidas retornan objetos con `path`/`url`; se construye `List<ProductImage>` para el producto.
+  - Creación: con el payload listo (`CreateProductRequest`), llama a `ProductService.createProduct`.
+  - UI: muestra estado de carga, deshabilita controles y maneja errores con `Toast/Snackbar`.
+- Edición de producto:
+  - Carga producto existente; permite reemplazar/agregar imágenes; llama a `updateProduct` con `UpdateProductRequest`.
+- Decisiones:
+  - Paralelizar subidas disminuye el tiempo total. `async + awaitAll` aprovecha I/O concurrente.
+  - `Dispatchers.IO` para red/archivo; correcto para evitar bloquear UI.
+  - Manejo de errores: se captura excepción en cada `async`; si alguna falla, se notifica y se decide si continuar parcial o abortar.
+  - Validaciones: se verifica `name`/`price` básicos; se recomienda añadir validaciones de rango y formato.
+
+### MainActivity — login, obtención de perfil y navegación por rol
+- Flujo:
+  - Si hay sesión (`TokenManager.getToken()`/datos guardados), se navega directamente según rol.
+  - Validación: se revisa que email y contraseña no estén vacíos; se muestra `progress`.
+  - Autenticación: se llama a `AuthService.login(LoginRequest)`. Al recibir token, se guarda temporalmente y se usa para pedir el perfil.
+  - Perfil: con el token, se llama a `UserService.getProfile()` (o equivalente) para obtener nombre, email y rol; se guarda en `TokenManager.saveAuth(token, name, email)`.
+  - Navegación: redirige a `HomeActivity` (Admin) o `HomeClientActivity` (Cliente) según `role`.
+- Decisiones:
+  - Dos pasos (token → perfil) permiten rellenar `TokenManager` con datos humanos (nombre/email) y no solo el token.
+  - Se usa `lifecycleScope` para respetar el ciclo de vida y evitar fugas.
+  - En error, se limpia sesión y vuelve a login.
+
+### Services Retrofit — contratos con Xano (Product, User, Cart, Order)
+- Patrón:
+  - Interfaces `suspend fun` con anotaciones HTTP (`@GET`, `@POST`, `@PATCH`, `@DELETE`).
+  - Rutas concisas: `product`, `user`, `cart`, `order`, `shipping`; parámetros por `@Path` y `@Query` cuando aplica.
+  - Requests/Responses tipados: clases `data` en el mismo paquete cuando el contrato es pequeño (p.ej., `AddCartItemRequest`, `UpdateCartItemRequest`).
+- Decisiones:
+  - Mantener requests junto al servicio mejora la trazabilidad del contrato.
+  - Tipos opcionales (`?`) reflejan la realidad del backend; se gestionan en parseo sin romper la UI.
+
+### Adapters — DiffUtil y carga de imágenes
+- `ProductAdapter`/`ProductAdminAdapter`/`CartAdapter` usan `ListAdapter` con `DiffUtil.ItemCallback`:
+  - Ventaja: actualizaciones eficientes por ítem sin refrescar toda la lista.
+  - Vinculación de imagen: usan `ImageUrlResolver.firstImageUrl(product.images)` y Coil con `placeholder`/`error`.
+- Decisiones:
+  - `DiffUtil` evita parpadeos y mejora rendimiento.
+  - Placeholders coherentes mejoran UX cuando la imagen tarda.
+
+### ProfileFragment — edición de datos y logout
+- Carga: obtiene nombre, email y otros datos desde `TokenManager` para mostrar en los campos.
+- Actualización: construye `UpdateUserRequest` y llama a `UserService.updateUser`. En éxito, refleja cambios y muestra confirmación.
+- Logout: `TokenManager.clear()` y navegación a `MainActivity`.
+- Decisiones:
+  - Sencillez en UI y flujo; pendiente validar formato email/teléfono y dirección.
+
+### Errores y estados — patrón actual y mejoras
+- Actual: se usan `progress` simples, `Toast/Snackbar` para errores y logs en capas de red.
+- Mejora propuesta: un `sealed class UiState { Loading, Data, Empty, Error }` por pantalla y `StateFlow` en `ViewModel`, para manejo uniforme y reintentos visibles.
+
+### BuildConfig y ApiConfig — centralización de configuración
+- `BuildConfig`: variables por variante (`debug/release`) definidas en `build.gradle.kts` con `buildConfigField`.
+- `ApiConfig`: lee `BuildConfig.XANO_STORE_BASE` y `XANO_AUTH_BASE` y expone `storeBaseUrl`/`authBaseUrl`.
+- Decisiones:
+  - Separar por entorno evita tocar código al cambiar URLs.
+  - Consumir desde utilidades (p.ej., `ImageUrlResolver`) reduce duplicación y errores.
+
 ## ¿Por qué funciona bien?
 
 - Separación clara de responsabilidades: UI, datos (model), red (services), estado (managers).
