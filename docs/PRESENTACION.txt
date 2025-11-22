@@ -92,5 +92,14 @@ Respuestas del doble-check (estado actual):
 Backend a confirmar:
 - Grupos/rutas correctos, esquemas de modelos/requests, política de carrito por usuario, límites de imagen.
 
+Recursos Android (res) — resumen:
+- `layout/`: `activity_*`, `fragment_*`, `item_*` (ej.: `fragment_profile.xml` → `FragmentProfileBinding`).
+- `values/`: `strings`, `colors`, `dimens`, `styles`, `themes`; usar `@string/...`, `@color/...`.
+- `drawable/`: íconos `ic_*`, fondos `bg_*`; preferir vectores.
+- `mipmap/`: íconos de app (`ic_launcher`).
+- `menu/`: menús de Toolbar/BottomNav; `navigation/`: grafo de navegación.
+- Qualifiers: `values-es`, `values-night`, `layout-land`, `drawable-xxhdpi`.
+- Buenas prácticas: no hardcodear; nombrar en `snake_case`; reutilizar estilos; `contentDescription`.
+
 Exportar a .docx/.pdf:
 - Exportar desde Markdown (VSCode + extensión, o pandoc) o copiar a Google Docs.
