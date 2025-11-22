@@ -59,7 +59,13 @@ xano-store-kotlin-main/
 │           │   │   │   └── PaymentDialogFragment.kt
 │           │   └── util/
 │           │       └── ImageUrlResolver.kt
-│           └── res/ (layouts, drawables, strings, etc.)
+│           └── res/
+│               ├── layout/
+│               ├── values/
+│               ├── drawable/
+│               ├── mipmap/
+│               ├── menu/
+│               └── navigation/
 ├── build.gradle.kts / gradle.properties / settings.gradle.kts / gradle/
 └── XANO Tienda.postman_collection.json
 ```
@@ -84,6 +90,36 @@ xano-store-kotlin-main/
 - `.idea/`: metadatos del IDE.
 - `README.md`: descripción general del proyecto.
 - `XANO Tienda.postman_collection.json`: colección Postman con endpoints de Xano.
+
+## Recursos Android (carpeta `res`)
+
+- Estructura habitual:
+  - `layout/`: vistas XML. Convención: `activity_*`, `fragment_*`, `item_*`. Ej.: `fragment_profile.xml` genera `FragmentProfileBinding`.
+  - `values/`: `strings.xml`, `colors.xml`, `dimens.xml`, `styles.xml`, `themes.xml`. Usar `@string/...`, `@color/...` en XML y `getString(R.string...)` en Kotlin.
+  - `drawable/`: imágenes y vectores (`ic_*` para íconos, `bg_*` para fondos). Preferir `VectorDrawable` sobre PNG.
+  - `mipmap/`: íconos de app (launcher). Mantener `ic_launcher` aquí.
+  - `menu/`: menús de Toolbar/BottomNavigation. Ej.: `menu_client.xml`, `menu_admin.xml`.
+  - `navigation/`: grafos de navegación (`nav_graph.xml`).
+  - Otros: `font/` (tipografías), `anim/` y `animator/` (animaciones), `xml/` (config), `raw/` (archivos brutos), `transition/`.
+
+- Acceso a recursos:
+  - En XML: `@string/...`, `@color/...`, `@drawable/...`, `@style/...`.
+  - En código: `R.layout.*`, `R.id.*`, `R.string.*`, `R.color.*`, `R.drawable.*`.
+  - ViewBinding: cada `layout` genera una clase de binding que evita `findViewById` y es type-safe.
+
+- Qualifiers (variantes):
+  - Idioma: `values-es/strings.xml`.
+  - Tema: `values-night/` para Dark Mode.
+  - Orientación: `layout-land/`.
+  - Densidad: `drawable-xxhdpi/`, `-xhdpi`, etc.
+
+- Buenas prácticas:
+  - No hardcodear textos/colores; centralizar en `values/`.
+  - Nombrar en `snake_case` y con prefijos semánticos (`btn_`, `tv_`, `ic_`, `bg_`).
+  - Reutilizar estilos/temas; usar atributos de tema (`?attr/colorPrimary`).
+  - Añadir `contentDescription` en imágenes con significado.
+  - Usar vectores cuando sea posible; colocar íconos de app en `mipmap/`.
+  - Separar `item_*` (RecyclerView) de `fragment_*`/`activity_*`.
 
 ## Estructura de Datos (Modelos)
 
@@ -308,35 +344,6 @@ xano-store-kotlin-main/
 - Carritos por usuario: política de deduplicación por `user_id` o múltiples carritos.
 - Restricciones de imagen: tamaño máximo y tipos MIME aceptados para validar antes de subir.
 
-## Recursos Android (carpeta `res`)
-
-- Estructura habitual:
-  - `layout/`: vistas XML. Convención: `activity_*`, `fragment_*`, `item_*`. Ej.: `fragment_profile.xml` genera `FragmentProfileBinding`.
-  - `values/`: `strings.xml`, `colors.xml`, `dimens.xml`, `styles.xml`, `themes.xml`. Usar `@string/...`, `@color/...` en XML y `getString(R.string...)` en Kotlin.
-  - `drawable/`: imágenes y vectores (`ic_*` para íconos, `bg_*` para fondos). Preferir `VectorDrawable` sobre PNG.
-  - `mipmap/`: íconos de app (launcher). Mantener `ic_launcher` aquí.
-  - `menu/`: menús de Toolbar/BottomNavigation. Ej.: `menu_client.xml`, `menu_admin.xml`.
-  - `navigation/`: grafos de navegación (`nav_graph.xml`).
-  - Otros: `font/` (tipografías), `anim/` y `animator/` (animaciones), `xml/` (config), `raw/` (archivos brutos), `transition/`.
-
-- Acceso a recursos:
-  - En XML: `@string/...`, `@color/...`, `@drawable/...`, `@style/...`.
-  - En código: `R.layout.*`, `R.id.*`, `R.string.*`, `R.color.*`, `R.drawable.*`.
-  - ViewBinding: cada `layout` genera una clase de binding que evita `findViewById` y es type-safe.
-
-- Qualifiers (variantes):
-  - Idioma: `values-es/strings.xml`.
-  - Tema: `values-night/` para Dark Mode.
-  - Orientación: `layout-land/`.
-  - Densidad: `drawable-xxhdpi/`, `-xhdpi`, etc.
-
-- Buenas prácticas:
-  - No hardcodear textos/colores; centralizar en `values/`.
-  - Nombrar en `snake_case` y con prefijos semánticos (`btn_`, `tv_`, `ic_`, `bg_`).
-  - Reutilizar estilos/temas; usar atributos de tema (`?attr/colorPrimary`).
-  - Añadir `contentDescription` en imágenes con significado.
-  - Usar vectores cuando sea posible; colocar íconos de app en `mipmap/`.
-  - Separar `item_*` (RecyclerView) de `fragment_*`/`activity_*`.
 
 ## Exportar a .docx / .pdf
 
