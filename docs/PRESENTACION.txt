@@ -1,0 +1,76 @@
+Don Pepe — Guía de Presentación Técnica (Resumen)
+
+Árbol de carpetas (--tree, extracto):
+
+xano-store-kotlin-main/
+├── README.md
+├── docs/
+│   ├── DEMO_ACCOUNTS.md
+│   ├── ENDPOINTS.md
+│   ├── PRESENTACION.md
+│   ├── PRESENTACION.txt
+│   ├── ProyectoFinal-AppAndroid-Kotlin-LayoutXML.pdf
+│   └── images/
+├── app/
+│   ├── build.gradle.kts
+│   └── src/main/java/com/miapp/xanostorekotlin/
+│       ├── api/
+│       │   ├── RetrofitClient.kt, TokenManager.kt, CartManager.kt
+│       │   ├── ProductService.kt, CartService.kt, OrderService.kt, UserService.kt
+│       │   ├── Create/Update requests
+│       ├── model/
+│       │   ├── Product.kt, ProductImage.kt (+ ImageMeta)
+│       │   ├── Cart.kt (+ CartItem), Order.kt (+ OrderItem, Shipping)
+│       │   ├── User.kt, LoginRequest.kt, AuthResponse.kt
+│       │   └── CreateProductRequest.kt, CreateProductResponse.kt
+│       ├── ui/
+│       │   ├── HomeActivity.kt (Admin), HomeClientActivity.kt (Cliente), ProductDetailActivity.kt
+│       │   ├── adapter/ (ProductAdapter, ProductAdminAdapter, CartAdapter, OrderAdapter)
+│       │   └── fragments/ (Products, Cart, Profile, AddProduct, ProductsAdmin, Users, PaymentDialog)
+│       └── util/ (ImageUrlResolver.kt)
+
+Modelos (resumen):
+- Product: id, name, description?, price?, stock, brand, category, images?, enabled?
+- ProductImage: path, name?, type?, size?, mime?, access?, url?, meta(width?, height?)
+- Cart: id, createdAt, userId; CartItem: id, createdAt, quantity, cartId, productId
+- Order: id, createdAt, total?, status?, userId; OrderItem: id, createdAt, quantity, price?, orderId, productId
+- Shipping: id, createdAt, address, shippingDate?, status?, orderId
+- User: id, name, email, role, status?, shippingAddress?, phone?, createdAt
+- Requests/Responses: LoginRequest, AuthResponse, Create/Update Product, CreateProductResponse, Create/Update User, Cart/Order/Shipping Requests
+
+Capas:
+- UI: Activities/Fragments/Adapters con ViewBinding y RecyclerView.
+- Estado: TokenManager (SharedPreferences), CartManager (cart_id persistido).
+- Red: RetrofitClient + OkHttp (interceptor Authorization), Services REST.
+- Utilidades: ImageUrlResolver (resuelve url vs path relativo).
+
+Por qué funciona bien:
+- Separación de responsabilidades clara; modelos consistentes; ViewBinding; ListAdapter + DiffUtil.
+- Flujos didácticos y simples; manejo básico de estados.
+- Resolver de imágenes robusto ante respuestas parciales.
+
+Mejoras (xyz):
+- MVVM + Repository + UseCases, StateFlow y manejo de errores unificado.
+- Room para carrito/catálogo; soporte offline; caché.
+- Hilt para DI; DataStore/EncryptedSharedPreferences para token.
+- Compresión/transformación de imágenes; webp/avif; Paging 3 en listas.
+- Tests de unidad e instrumentados básicos.
+
+Guion de demo:
+- Admin: login → CRUD productos (múltiples imágenes) → usuarios (bloqueo) → órdenes: aceptar y rechazar.
+- Cliente: login → catálogo → carrito (editar cantidades) → pago simulado → estado → perfil.
+- Cierre técnico: Retrofit, ViewBinding, RecyclerView, SharedPreferences, ImageUrlResolver.
+
+Preguntas de doble check:
+- ¿storeBaseUrl y credenciales están bien configurados?
+- ¿Logout limpia sesión y redirige por rol correctamente?
+- ¿CartManager asegura/recuerda cart_id?
+- ¿Resolver de imágenes cubre casos url/path?
+- ¿Validaciones de formularios suficientes?
+- ¿Estados de carga/vacío/error con feedback?
+- ¿Endpoints de Xano alineados con modelos?
+- ¿Límites de tamaño/formatos de imagen definidos?
+- ¿Seeds suficientes (≥10 productos) para demo?
+
+Exportar a .docx/.pdf:
+- Exportar desde Markdown (VSCode + extensión, o pandoc) o copiar a Google Docs.
